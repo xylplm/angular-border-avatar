@@ -147,7 +147,6 @@ export class BorderAvatarComponent implements AfterViewInit, OnDestroy {
     const config = this.borderConfig();
     return {
       backgroundImage: config ? `url('${config.gifUrl}')` : 'none',
-      borderRadius: config?.borderRadius || '50%',
     };
   }
 
