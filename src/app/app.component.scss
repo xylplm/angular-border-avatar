@@ -270,6 +270,8 @@ section {
   .header {
     .header-content {
       gap: 1rem;
+      flex-direction: column;
+      align-items: stretch;
     }
 
     .logo-section {
@@ -277,6 +279,17 @@ section {
 
       h1 {
         font-size: 1.2rem;
+      }
+    }
+
+    .nav-actions {
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+
+      button,
+      a {
+        width: 100%;
       }
     }
   }
