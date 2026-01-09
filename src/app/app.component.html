@@ -3,7 +3,7 @@
   <header class="header">
     <div class="header-content">
       <div class="logo-section">
-        <img src="assets/logo.png" alt="Logo" class="logo-img">
+        <img src="assets/logo.png" alt="Logo" class="logo-img" />
         <h1>{{ 'home.title' | translate }}</h1>
       </div>
       <div class="nav-actions">
@@ -29,12 +29,7 @@
             <div class="preview-part">
               <h2>{{ 'common.preview' | translate }}</h2>
               <div class="preview-container">
-                <angular-border-avatar
-                  [avatarUrl]="avatarUrl()"
-                  [borderConfig]="borderConfig()"
-                  [size]="avatarSize()"
-                  [clickable]="false"
-                ></angular-border-avatar>
+                <angular-border-avatar [avatarUrl]="avatarUrl()" [borderConfig]="borderConfig()" [size]="avatarSize()" [clickable]="false"></angular-border-avatar>
               </div>
             </div>
 
@@ -45,36 +40,32 @@
                 <div class="form-group">
                   <label>{{ 'common.avatarScale' | translate }}</label>
                   <div class="slider-container">
-                    <input type="range" min="0.3" max="0.95" step="0.01"
-                           formControlName="avatarScale" class="slider" />
-                    <span class="value-display">{{ quickParamsForm.get('avatarScale')?.value ?? borderConfig().avatarScale | number:'1.2-2' }}</span>
+                    <input type="range" min="0.3" max="0.95" step="0.01" formControlName="avatarScale" class="slider" />
+                    <span class="value-display">{{ quickParamsForm.get('avatarScale')?.value ?? borderConfig().avatarScale | number : '1.2-2' }}</span>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label>{{ 'common.topOffset' | translate }}</label>
                   <div class="slider-container">
-                    <input type="range" min="-0.4" max="0.4" step="0.01"
-                           formControlName="topOffsetRatio" class="slider" />
-                    <span class="value-display">{{ quickParamsForm.get('topOffsetRatio')?.value ?? borderConfig().topOffsetRatio | number:'1.2-2' }}</span>
+                    <input type="range" min="-0.4" max="0.4" step="0.01" formControlName="topOffsetRatio" class="slider" />
+                    <span class="value-display">{{ quickParamsForm.get('topOffsetRatio')?.value ?? borderConfig().topOffsetRatio | number : '1.2-2' }}</span>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label>{{ 'common.leftOffset' | translate }}</label>
                   <div class="slider-container">
-                    <input type="range" min="-0.4" max="0.4" step="0.01"
-                           formControlName="leftOffsetRatio" class="slider" />
-                    <span class="value-display">{{ quickParamsForm.get('leftOffsetRatio')?.value ?? borderConfig().leftOffsetRatio | number:'1.2-2' }}</span>
+                    <input type="range" min="-0.4" max="0.4" step="0.01" formControlName="leftOffsetRatio" class="slider" />
+                    <span class="value-display">{{ quickParamsForm.get('leftOffsetRatio')?.value ?? borderConfig().leftOffsetRatio | number : '1.2-2' }}</span>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label>{{ 'common.rotate' | translate }}</label>
                   <div class="slider-container">
-                    <input type="range" min="0" max="360" step="1"
-                           formControlName="rotate" class="slider" />
-                    <span class="value-display">{{ (quickParamsForm.get('rotate')?.value ?? borderConfig().rotate ?? 0) | number:'1.0-0' }}°</span>
+                    <input type="range" min="0" max="360" step="1" formControlName="rotate" class="slider" />
+                    <span class="value-display">{{ quickParamsForm.get('rotate')?.value ?? borderConfig().rotate ?? 0 | number : '1.0-0' }}°</span>
                   </div>
                 </div>
 
@@ -98,12 +89,9 @@
         <mat-card-content>
           <div class="presets-grid">
             @for (preset of presetConfigs | keyvalue; track preset.key) {
-              <button mat-raised-button 
-                      [color]="selectedPreset() === preset.key ? 'primary' : ''"
-                      (click)="selectPreset(preset.key)"
-                      class="preset-btn">
-                {{ preset.value.name | translate }}
-              </button>
+            <button mat-raised-button [color]="selectedPreset() === preset.key ? 'primary' : ''" (click)="selectPreset(preset.key)" class="preset-btn">
+              {{ preset.value.name | translate }}
+            </button>
             }
           </div>
         </mat-card-content>
@@ -121,76 +109,53 @@
         </mat-card-header>
 
         @if (debugMode()) {
-          <mat-divider></mat-divider>
-          <mat-card-content [formGroup]="debugForm" class="debug-content">
-            <!-- 头像URL设置 -->
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>{{ 'common.avatarUrl' | translate }}</mat-label>
-              <input matInput formControlName="avatarUrl" placeholder="https://..." />
-              <button mat-icon-button matSuffix (click)="selectAvatarFile()" 
-                      matTooltip="Upload local file" type="button">
-                <mat-icon>folder_open</mat-icon>
+        <mat-divider></mat-divider>
+        <mat-card-content [formGroup]="debugForm" class="debug-content">
+          <!-- 头像URL设置 -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'common.avatarUrl' | translate }}</mat-label>
+            <input matInput formControlName="avatarUrl" placeholder="https://..." />
+            <button mat-icon-button matSuffix (click)="selectAvatarFile()" [matTooltip]="'common.uploadFile' | translate" type="button">
+              <mat-icon>folder_open</mat-icon>
+            </button>
+          </mat-form-field>
+          <input #avatarFileInput type="file" accept="image/*" (change)="onAvatarFileSelected($event)" class="sr-only" />
+
+          <!-- 边框GIF设置 -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'common.borderUrl' | translate }}</mat-label>
+            <input matInput formControlName="borderGifUrl" placeholder="https://..." />
+            <button mat-icon-button matSuffix (click)="selectBorderFile()" [matTooltip]="'common.uploadFile' | translate" type="button">
+              <mat-icon>folder_open</mat-icon>
+            </button>
+          </mat-form-field>
+          <input #borderFileInput type="file" accept="image/*" (change)="onBorderFileSelected($event)" class="sr-only" />
+
+          <!-- 尺寸设置 -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'common.size' | translate }}</mat-label>
+            <input matInput formControlName="avatarSize" placeholder="150px" />
+          </mat-form-field>
+
+          <!-- 配置JSON编辑 -->
+          <div class="json-section">
+            <h3>{{ 'common.jsonConfig' | translate }}</h3>
+            <textarea formControlName="configJson" class="json-editor" rows="10"></textarea>
+            <p style="color: #ff9800; margin-bottom: 12px; font-size: 12px;">
+              <strong>{{ 'common.note' | translate }}:</strong> {{ 'common.gifUrlNote' | translate }}
+            </p>
+            <div class="json-actions">
+              <button mat-raised-button (click)="copyConfig()" [matTooltip]="'common.copyToClipboard' | translate">
+                <mat-icon>content_copy</mat-icon>
+                {{ 'common.copy' | translate }}
               </button>
-            </mat-form-field>
-            <input 
-              #avatarFileInput
-              type="file" 
-              accept="image/*" 
-              (change)="onAvatarFileSelected($event)" 
-              class="sr-only"
-            />
-
-            <!-- 边框GIF设置 -->
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>{{ 'common.borderUrl' | translate }}</mat-label>
-              <input matInput formControlName="borderGifUrl" placeholder="https://..." />
-              <button mat-icon-button matSuffix (click)="selectBorderFile()" 
-                      matTooltip="Upload local file" type="button">
-                <mat-icon>folder_open</mat-icon>
+              <button mat-raised-button color="accent" (click)="applyCustomConfig()" [matTooltip]="'common.applyCustomConfig' | translate">
+                <mat-icon>refresh</mat-icon>
+                {{ 'common.apply' | translate }}
               </button>
-            </mat-form-field>
-            <input 
-              #borderFileInput
-              type="file" 
-              accept="image/*" 
-              (change)="onBorderFileSelected($event)" 
-              class="sr-only"
-            />
-
-            <!-- 尺寸设置 -->
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>{{ 'common.size' | translate }}</mat-label>
-              <input matInput formControlName="avatarSize" placeholder="150px" />
-            </mat-form-field>
-
-            <!-- 配置JSON编辑 -->
-            <div class="json-section">
-              <h3>{{ 'common.jsonConfig' | translate }}</h3>
-              <textarea 
-                formControlName="configJson"
-                class="json-editor"
-                rows="10"
-              ></textarea>
-              <div class="json-actions">
-                <button mat-raised-button color="primary" (click)="importConfig()" matTooltip="Import config from JSON">
-                  <mat-icon>download</mat-icon>
-                  {{ 'common.import' | translate }}
-                </button>
-                <button mat-raised-button color="accent" (click)="updateConfigJson()" matTooltip="Update JSON config">
-                  <mat-icon>refresh</mat-icon>
-                  {{ 'common.update' | translate }}
-                </button>
-                <button mat-raised-button (click)="copyConfig()" matTooltip="Copy to clipboard">
-                  <mat-icon>content_copy</mat-icon>
-                  {{ 'common.copy' | translate }}
-                </button>
-                <button mat-raised-button (click)="downloadConfig()" matTooltip="Download as JSON file">
-                  <mat-icon>save_alt</mat-icon>
-                  {{ 'common.download' | translate }}
-                </button>
-              </div>
             </div>
-          </mat-card-content>
+          </div>
+        </mat-card-content>
         }
       </mat-card>
     </section>

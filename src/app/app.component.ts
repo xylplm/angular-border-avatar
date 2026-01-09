@@ -52,6 +52,8 @@ const PRESET_CONFIGS: PresetConfig[] = [
       avatarScale: 0.55,
       topOffsetRatio: 0.37,
       leftOffsetRatio: 0.21,
+      rotate: 0,
+      borderRadius: '50%',
     },
     size: '150px',
   },
@@ -61,12 +63,13 @@ const PRESET_CONFIGS: PresetConfig[] = [
     avatarUrl: 'assets/images/avatar/avatar2.jpg',
     borderConfig: {
       gifUrl: 'assets/images/gif/gif2.gif',
-      avatarScale: 0.60,
-      topOffsetRatio: 0.20,
-      leftOffsetRatio: 0.20,
+      avatarScale: 0.6,
+      topOffsetRatio: 0.2,
+      leftOffsetRatio: 0.2,
       rotate: 0,
+      borderRadius: '50%',
     },
-    size: '150px',
+    size: '250px',
   },
 ];
 
@@ -169,10 +172,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // 订阅快速参数表单的值变化（添加防抖）
     this.quickParamsForm.valueChanges
-      .pipe(
-        debounceTime(100),
-        takeUntil(this.destroy$)
-      )
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe((value) => {
         const newConfig: BorderAvatarConfig = {
           ...this.borderConfig(),
@@ -183,21 +183,18 @@ export class AppComponent implements OnInit, OnDestroy {
           borderRadius: value.borderRadius,
         };
         this.borderConfig.set(newConfig);
-        this.updateConfigJson();
+        this.syncConfigJsonToForm();
       });
 
     // 订阅调试表单的值变化（添加防抖）
     this.debugForm.valueChanges
-      .pipe(
-        debounceTime(100),
-        takeUntil(this.destroy$)
-      )
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe((value) => {
         // 忽略 configJson 的变化，防止循环更新
         if (value.configJson === this.configJson()) {
           return;
         }
-        
+
         // 只更新实际改变的字段
         if (value.avatarUrl !== this.avatarUrl()) {
           this.avatarUrl.set(value.avatarUrl);
@@ -205,7 +202,10 @@ export class AppComponent implements OnInit, OnDestroy {
         if (value.borderGifUrl !== this.borderGifUrl()) {
           this.borderGifUrl.set(value.borderGifUrl);
           // 同步 borderConfig 中的 gifUrl
-          const newConfig = { ...this.borderConfig(), gifUrl: value.borderGifUrl };
+          const newConfig = {
+            ...this.borderConfig(),
+            gifUrl: value.borderGifUrl,
+          };
           this.borderConfig.set(newConfig);
         }
         if (value.avatarSize !== this.avatarSize()) {
@@ -231,7 +231,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.selectedPreset.set(key);
     const preset = this.presetConfigs[key];
     if (preset) {
-      // 只更新 borderConfig，表单会自动同步
+      // 更新 borderConfig
       this.borderConfig.set({ ...preset.borderConfig });
 
       // 更新快速参数表单的值
@@ -244,12 +244,29 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
       // 更新调试表单的值
-      this.debugForm.patchValue({
-        avatarUrl: preset.avatarUrl,
-        borderGifUrl: preset.borderConfig.gifUrl,
-        avatarSize: preset.size,
-      });
-      // updateConfigJson() 会被 quickParamsForm 变化触发，无需重复调用
+      this.debugForm.patchValue(
+        {
+          avatarUrl: preset.avatarUrl,
+          borderGifUrl: preset.borderConfig.gifUrl,
+          avatarSize: preset.size,
+        },
+        { emitEvent: false }
+      );
+
+      // 更新信号值
+      this.avatarUrl.set(preset.avatarUrl);
+      this.borderGifUrl.set(preset.borderConfig.gifUrl);
+      this.avatarSize.set(preset.size);
+
+      // 同步 JSON 文本框
+      const jsonStr = JSON.stringify(preset.borderConfig, null, 2);
+      this.configJson.set(jsonStr);
+      this.debugForm.patchValue(
+        {
+          configJson: jsonStr,
+        },
+        { emitEvent: false }
+      );
     }
   }
 
@@ -267,26 +284,28 @@ export class AppComponent implements OnInit, OnDestroy {
     if (!file) {
       return;
     }
-    
+
     // 验证文件类型
     if (!file.type.startsWith('image/')) {
-      const msg = this.currentLanguage() === 'en' 
-        ? 'Please select a valid image file' 
-        : '请选择有效的图片文件';
+      const msg =
+        this.currentLanguage() === 'en'
+          ? 'Please select a valid image file'
+          : '请选择有效的图片文件';
       console.error(msg);
       return;
     }
-    
+
     // 验证文件大小（限制为 5MB）
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      const msg = this.currentLanguage() === 'en' 
-        ? 'File size must be less than 5MB' 
-        : '文件大小必须小于 5MB';
+      const msg =
+        this.currentLanguage() === 'en'
+          ? 'File size must be less than 5MB'
+          : '文件大小必须小于 5MB';
       console.error(msg);
       return;
     }
-    
+
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
       if (e.target?.result) {
@@ -294,9 +313,10 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     };
     reader.onerror = () => {
-      const msg = this.currentLanguage() === 'en' 
-        ? 'Failed to read file' 
-        : '读取文件失败';
+      const msg =
+        this.currentLanguage() === 'en'
+          ? 'Failed to read file'
+          : '读取文件失败';
       console.error(msg);
     };
     reader.readAsDataURL(file);
@@ -316,54 +336,86 @@ export class AppComponent implements OnInit, OnDestroy {
     this.handleFileSelected(file, 'avatarUrl');
   }
 
-  // 更新配置JSON
-  updateConfigJson() {
+  // 同步配置JSON到表单（当配置通过其他方式改变时调用）
+  private syncConfigJsonToForm() {
     const config = this.borderConfig();
     const jsonStr = JSON.stringify(config, null, 2);
     this.configJson.set(jsonStr);
-    // 同步到表单
+    // 同步到表单，emitEvent: false 防止触发表单变化事件
     this.debugForm.patchValue({ configJson: jsonStr }, { emitEvent: false });
   }
 
-  // 从JSON导入配置
-  importConfig() {
+  // 应用自定义配置 - 从表单中的JSON文本解析并应用配置
+  applyCustomConfig() {
     try {
       const jsonValue = this.debugForm.get('configJson')?.value;
       if (!jsonValue || typeof jsonValue !== 'string') {
         throw new Error('JSON 内容为空或格式不正确');
       }
-      
-      const config = JSON.parse(jsonValue) as BorderAvatarConfig;
-      
+
+      let config = JSON.parse(jsonValue) as BorderAvatarConfig;
+
+      // 用 borderGifUrl 覆盖 configJson 中的 gifUrl
+      const borderGifUrl = this.debugForm.get('borderGifUrl')?.value;
+      if (borderGifUrl) {
+        config.gifUrl = borderGifUrl;
+      }
+
       // 验证必需字段
-      if (!config.gifUrl || typeof config.avatarScale !== 'number' || 
-          typeof config.topOffsetRatio !== 'number' || 
-          typeof config.leftOffsetRatio !== 'number') {
+      if (
+        !config.gifUrl ||
+        typeof config.avatarScale !== 'number' ||
+        typeof config.topOffsetRatio !== 'number' ||
+        typeof config.leftOffsetRatio !== 'number'
+      ) {
         throw new Error('配置缺少必需字段');
       }
-      
+
       this.borderConfig.set(config);
 
       // 同步快速参数表单
-      this.quickParamsForm.patchValue({
-        avatarScale: config.avatarScale,
-        topOffsetRatio: config.topOffsetRatio,
-        leftOffsetRatio: config.leftOffsetRatio,
-        rotate: config.rotate || 0,
-        borderRadius: config.borderRadius || '50%',
-      }, { emitEvent: false });
+      this.quickParamsForm.patchValue(
+        {
+          avatarScale: config.avatarScale,
+          topOffsetRatio: config.topOffsetRatio,
+          leftOffsetRatio: config.leftOffsetRatio,
+          rotate: config.rotate || 0,
+          borderRadius: config.borderRadius || '50%',
+        },
+        { emitEvent: false }
+      );
+
+      // 同时更新 borderGifUrl 到调试表单和信号
+      this.borderGifUrl.set(config.gifUrl);
+
+      // 更新 avatarUrl 和 avatarSize
+      const avatarUrl = this.debugForm.get('avatarUrl')?.value;
+      if (avatarUrl) {
+        this.avatarUrl.set(avatarUrl);
+      }
+
+      const avatarSize = this.debugForm.get('avatarSize')?.value;
+      if (avatarSize) {
+        this.avatarSize.set(avatarSize);
+      }
+
+      // 同步 JSON 文本框以显示最新的配置
+      this.syncConfigJsonToForm();
 
       const message =
         this.currentLanguage() === 'en'
-          ? 'Config imported successfully!'
-          : '配置导入成功！';
+          ? 'Config updated successfully!'
+          : '配置更新成功！';
       this.snackBar.open(message, 'OK', { duration: 3000 });
     } catch (e) {
       const message =
         this.currentLanguage() === 'en'
-          ? `Import failed: ${e instanceof Error ? e.message : 'Unknown error'}`
-          : `导入失败: ${e instanceof Error ? e.message : '未知错误'}`;
-      this.snackBar.open(message, '关闭', { duration: 5000, panelClass: ['error-snackbar'] });
+          ? `Update failed: ${e instanceof Error ? e.message : 'Unknown error'}`
+          : `更新失败: ${e instanceof Error ? e.message : '未知错误'}`;
+      this.snackBar.open(message, '关闭', {
+        duration: 5000,
+        panelClass: ['error-snackbar'],
+      });
     }
   }
 
@@ -372,53 +424,37 @@ export class AppComponent implements OnInit, OnDestroy {
     const configValue = this.debugForm.get('configJson')?.value;
     if (!configValue) {
       this.snackBar.open(
-        this.currentLanguage() === 'en' ? 'No config to copy' : '没有配置要复制',
+        this.currentLanguage() === 'en'
+          ? 'No config to copy'
+          : '没有配置要复制',
         '关闭',
         { duration: 3000, panelClass: ['warn-snackbar'] }
       );
       return;
     }
-    navigator.clipboard.writeText(configValue).then(() => {
-      const message =
-        this.currentLanguage() === 'en'
-          ? 'Config copied to clipboard!'
-          : '已复制到剪贴板！';
-      this.snackBar.open(message, 'OK', { duration: 3000, panelClass: ['success-snackbar'] });
-    }).catch(() => {
-      const message =
-        this.currentLanguage() === 'en'
-          ? 'Failed to copy config'
-          : '复制失败';
-      this.snackBar.open(message, '关闭', { duration: 3000, panelClass: ['error-snackbar'] });
-    });
+    navigator.clipboard
+      .writeText(configValue)
+      .then(() => {
+        const message =
+          this.currentLanguage() === 'en'
+            ? 'Config copied to clipboard!'
+            : '已复制到剪贴板！';
+        this.snackBar.open(message, 'OK', {
+          duration: 3000,
+          panelClass: ['success-snackbar'],
+        });
+      })
+      .catch(() => {
+        const message =
+          this.currentLanguage() === 'en'
+            ? 'Failed to copy config'
+            : '复制失败';
+        this.snackBar.open(message, '关闭', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+      });
   }
 
-  // 下载配置
-  downloadConfig() {
-    const configValue = this.debugForm.get('configJson')?.value;
-    if (!configValue) {
-      this.snackBar.open(
-        this.currentLanguage() === 'en' ? 'No config to download' : '没有配置要下载',
-        '关闭',
-        { duration: 3000, panelClass: ['warn-snackbar'] }
-      );
-      return;
-    }
-    const element = document.createElement('a');
-    element.setAttribute(
-      'href',
-      'data:text/plain;charset=utf-8,' + encodeURIComponent(configValue)
-    );
-    element.setAttribute('download', 'border-avatar-config.json');
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    
-    const message =
-      this.currentLanguage() === 'en'
-        ? 'Config download started!'
-        : '配置下载已开始！';
-    this.snackBar.open(message, 'OK', { duration: 3000, panelClass: ['success-snackbar'] });
-  }
+
 }

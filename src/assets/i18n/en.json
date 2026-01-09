@@ -22,12 +22,15 @@
     "rotate": "Rotate",
     "borderRadius": "Border Radius",
     "jsonConfig": "JSON Config",
-    "import": "Import",
-    "update": "Update",
     "copy": "Copy",
-    "download": "Download",
+    "apply": "Apply",
+    "uploadFile": "Upload local file",
+    "copyToClipboard": "Copy to clipboard",
+    "applyCustomConfig": "Apply custom config",
     "usage": "Usage",
     "usageDesc": "Adjust parameters in real-time. Upload local files or paste URLs. Copy the final configuration and use it in your project.",
+    "note": "Note",
+    "gifUrlNote": "The gifUrl in JSON config is for reference only. The actual borderGifUrl input field above takes precedence.",
     "github": "GitHub"
   }
 }
