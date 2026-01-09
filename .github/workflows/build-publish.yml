@@ -17,10 +17,9 @@ jobs:
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
-          # 启用来源证明和OIDC身份
-          provenance: true
-          # 可选但推荐：指定生成者的ID（你的GitHub用户名/组织）
-          generate-release-notes: false
+      
+      # Enable OIDC provenance
+      - run: npm config set --global provenance true
 
       - name: Update npm to latest version for OIDC support
         run: npm install -g npm@latest
@@ -32,13 +31,13 @@ jobs:
         id: version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
         with:
-          path: projects/angular-tabler-icons
+          path: projects/angular-border-avatar
 
       - name: Build Angular library
         run: npm run lib:build
 
       - name: Publish package to NPM with OIDC
-        working-directory: ./dist/angular-tabler-icons
+        working-directory: ./dist/angular-border-avatar
         run: npm publish --access public
 
 
