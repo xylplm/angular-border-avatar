@@ -1,0 +1,219 @@
+<div class="app-container">
+  <!-- 顶部导航 -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo-section">
+        <img src="assets/logo.png" alt="Logo" class="logo-img">
+        <h1>{{ 'home.title' | translate }}</h1>
+      </div>
+      <div class="nav-actions">
+        <button mat-raised-button color="accent" (click)="toggleLanguage()" matTooltip="Toggle language">
+          {{ currentLanguage() === 'en' ? '中文' : 'EN' }}
+        </button>
+        <a mat-raised-button color="primary" href="https://github.com/xylplm/angular-border-avatar" target="_blank" matTooltip="View on GitHub">
+          <mat-icon>open_in_new</mat-icon>
+          {{ 'common.github' | translate }}
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主要内容 -->
+  <main class="main-content">
+    <!-- 预览和快速调试部分 -->
+    <section class="preview-debug-section">
+      <mat-card class="preview-card">
+        <mat-card-content>
+          <div class="preview-debug-wrapper">
+            <!-- 预览部分 -->
+            <div class="preview-part">
+              <h2>{{ 'common.preview' | translate }}</h2>
+              <div class="preview-container">
+                <angular-border-avatar
+                  [avatarUrl]="avatarUrl()"
+                  [borderConfig]="borderConfig()"
+                  [size]="avatarSize()"
+                  [clickable]="false"
+                ></angular-border-avatar>
+              </div>
+            </div>
+
+            <!-- 快速参数调整 -->
+            <div class="quick-params" [formGroup]="quickParamsForm">
+              <h2>{{ 'common.adjust' | translate }}</h2>
+              <div class="params-list">
+                <div class="form-group">
+                  <label>{{ 'common.avatarScale' | translate }}</label>
+                  <div class="slider-container">
+                    <input type="range" min="0.3" max="0.95" step="0.01"
+                           formControlName="avatarScale" class="slider" />
+                    <span class="value-display">{{ quickParamsForm.get('avatarScale')?.value ?? borderConfig().avatarScale | number:'1.2-2' }}</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>{{ 'common.topOffset' | translate }}</label>
+                  <div class="slider-container">
+                    <input type="range" min="-0.4" max="0.4" step="0.01"
+                           formControlName="topOffsetRatio" class="slider" />
+                    <span class="value-display">{{ quickParamsForm.get('topOffsetRatio')?.value ?? borderConfig().topOffsetRatio | number:'1.2-2' }}</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>{{ 'common.leftOffset' | translate }}</label>
+                  <div class="slider-container">
+                    <input type="range" min="-0.4" max="0.4" step="0.01"
+                           formControlName="leftOffsetRatio" class="slider" />
+                    <span class="value-display">{{ quickParamsForm.get('leftOffsetRatio')?.value ?? borderConfig().leftOffsetRatio | number:'1.2-2' }}</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>{{ 'common.rotate' | translate }}</label>
+                  <div class="slider-container">
+                    <input type="range" min="0" max="360" step="1"
+                           formControlName="rotate" class="slider" />
+                    <span class="value-display">{{ (quickParamsForm.get('rotate')?.value ?? borderConfig().rotate ?? 0) | number:'1.0-0' }}°</span>
+                  </div>
+                </div>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>{{ 'common.borderRadius' | translate }}</mat-label>
+                  <input matInput formControlName="borderRadius" placeholder="50%" />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </section>
+
+    <!-- 预设配置 -->
+    <section class="presets-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ 'common.presets' | translate }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="presets-grid">
+            @for (preset of presetConfigs | keyvalue; track preset.key) {
+              <button mat-raised-button 
+                      [color]="selectedPreset() === preset.key ? 'primary' : ''"
+                      (click)="selectPreset(preset.key)"
+                      class="preset-btn">
+                {{ preset.value.name | translate }}
+              </button>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </section>
+
+    <!-- 调试模式 -->
+    <section class="debug-section">
+      <mat-card>
+        <mat-card-header class="debug-header">
+          <mat-card-title>{{ 'common.debug' | translate }}</mat-card-title>
+          <button mat-icon-button (click)="debugMode.set(!debugMode())" class="toggle-btn">
+            <mat-icon>{{ debugMode() ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </button>
+        </mat-card-header>
+
+        @if (debugMode()) {
+          <mat-divider></mat-divider>
+          <mat-card-content [formGroup]="debugForm" class="debug-content">
+            <!-- 头像URL设置 -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'common.avatarUrl' | translate }}</mat-label>
+              <input matInput formControlName="avatarUrl" placeholder="https://..." />
+              <button mat-icon-button matSuffix (click)="selectAvatarFile()" 
+                      matTooltip="Upload local file" type="button">
+                <mat-icon>folder_open</mat-icon>
+              </button>
+            </mat-form-field>
+            <input 
+              #avatarFileInput
+              type="file" 
+              accept="image/*" 
+              (change)="onAvatarFileSelected($event)" 
+              class="sr-only"
+            />
+
+            <!-- 边框GIF设置 -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'common.borderUrl' | translate }}</mat-label>
+              <input matInput formControlName="borderGifUrl" placeholder="https://..." />
+              <button mat-icon-button matSuffix (click)="selectBorderFile()" 
+                      matTooltip="Upload local file" type="button">
+                <mat-icon>folder_open</mat-icon>
+              </button>
+            </mat-form-field>
+            <input 
+              #borderFileInput
+              type="file" 
+              accept="image/*" 
+              (change)="onBorderFileSelected($event)" 
+              class="sr-only"
+            />
+
+            <!-- 尺寸设置 -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'common.size' | translate }}</mat-label>
+              <input matInput formControlName="avatarSize" placeholder="150px" />
+            </mat-form-field>
+
+            <!-- 配置JSON编辑 -->
+            <div class="json-section">
+              <h3>{{ 'common.jsonConfig' | translate }}</h3>
+              <textarea 
+                formControlName="configJson"
+                class="json-editor"
+                rows="10"
+              ></textarea>
+              <div class="json-actions">
+                <button mat-raised-button color="primary" (click)="importConfig()" matTooltip="Import config from JSON">
+                  <mat-icon>download</mat-icon>
+                  {{ 'common.import' | translate }}
+                </button>
+                <button mat-raised-button color="accent" (click)="updateConfigJson()" matTooltip="Update JSON config">
+                  <mat-icon>refresh</mat-icon>
+                  {{ 'common.update' | translate }}
+                </button>
+                <button mat-raised-button (click)="copyConfig()" matTooltip="Copy to clipboard">
+                  <mat-icon>content_copy</mat-icon>
+                  {{ 'common.copy' | translate }}
+                </button>
+                <button mat-raised-button (click)="downloadConfig()" matTooltip="Download as JSON file">
+                  <mat-icon>save_alt</mat-icon>
+                  {{ 'common.download' | translate }}
+                </button>
+              </div>
+            </div>
+          </mat-card-content>
+        }
+      </mat-card>
+    </section>
+
+    <!-- 使用说明 -->
+    <section class="docs-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ 'common.usage' | translate }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="docs-content">
+            <p>{{ 'common.usageDesc' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </section>
+  </main>
+
+  <!-- 底部 -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2024 Angular Border Avatar. MIT License.</p>
+    </div>
+  </footer>
+</div>

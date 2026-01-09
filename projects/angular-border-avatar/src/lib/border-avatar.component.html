@@ -1,0 +1,35 @@
+<div
+  #avatarContainer
+  class="border-avatar-container"
+  [style.width]="size()"
+  [style.height]="size()"
+  [class.clickable]="clickable()"
+  (click)="onClick($event)"
+  [attr.role]="clickable() ? 'button' : undefined"
+  [attr.tabindex]="clickable() ? 0 : -1"
+  [attr.aria-label]="altText()"
+>
+  <!-- 头像层 -->
+  <div class="avatar-layer" [ngStyle]="getAvatarStyle()" aria-hidden="true">
+    <img
+      [src]="hasError() ? defaultImageUrl() : avatarUrl()"
+      [alt]="altText()"
+      class="avatar-image"
+      [attr.loading]="lazyLoad() ? 'lazy' : 'eager'"
+      (load)="onImageLoad()"
+      (error)="onImageError()"
+    />
+  </div>
+
+  <!-- 边框层 -->
+  <div
+    class="border-layer"
+    [ngStyle]="getBorderStyle()"
+    aria-hidden="true"
+  ></div>
+
+  <!-- 加载动画 -->
+  <div class="loading-spinner" *ngIf="isLoading()">
+    <div class="spinner"></div>
+  </div>
+</div>

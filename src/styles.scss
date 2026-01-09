@@ -1,0 +1,223 @@
+/* ========== Angular Material 21 官方主题配置 (Material Design 3) ========== */
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light dark;
+  @include mat.theme((color: mat.$blue-palette,
+      typography: Roboto,
+      density: 0));
+  @include mat.strong-focus-indicators();
+  @include mat.system-classes();
+
+  /* 自定义主题颜色 */
+
+  @include mat.theme-overrides((primary: rgb(93, 135, 255),
+      error: rgb(235, 90, 60),
+      body-medium-size: 14px,
+      body-large-size: 14px,
+      outline-variant: #d7dde2,
+      level1: "#919eab4d 0px 0px 2px 0px, #919eab1f 0px 12px 24px -4px",
+      level2: rgba(145, 158, 171, 0.12) 0px 1px 16px,
+    ));
+
+  --mat-sys-primary: rgb(93, 135, 255);
+  --mat-sys-primary-fixed-dim: rgb(93, 135, 255, 0.15);
+  --mat-sys-secondary: rgb(68, 183, 247);
+  --mat-sys-secondary-fixed-dim: rgb(68, 183, 247, 0.15);
+}
+
+/* ========== 全局样式 ========== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+/* ========== 标题样式 ========== */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--mat-sys-on-surface);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+h1 {
+  font-size: 2.2rem;
+}
+
+h2 {
+  font-size: 1.8rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+}
+
+p {
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.8;
+}
+
+/* ========== 代码样式 ========== */
+code {
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  color: #d63384;
+  font-size: 0.9em;
+}
+
+pre {
+  background: #2d2d2d;
+  color: #f8f8f2;
+  padding: 1.2rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1rem 0;
+
+  code {
+    background: none;
+    color: #f8f8f2;
+    padding: 0;
+  }
+}
+
+/* ========== Material Snackbar 自定义样式 ========== */
+.success-snackbar::ng-deep .mdc-snackbar__surface {
+  background-color: #4caf50 !important;
+}
+
+.success-snackbar::ng-deep .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500;
+}
+
+.error-snackbar::ng-deep .mdc-snackbar__surface {
+  background-color: #f44336 !important;
+}
+
+.error-snackbar::ng-deep .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500;
+}
+
+.warn-snackbar::ng-deep .mdc-snackbar__surface {
+  background-color: #ff9800 !important;
+}
+
+.warn-snackbar::ng-deep .mat-mdc-snack-bar-label {
+  color: white !important;
+  font-weight: 500;
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* ========== Material 按钮样式优化 ========== */
+$text-color: var(--mat-sys-on-background);
+$primary: var(--mat-sys-primary);
+$secondary: var(--mat-sys-secondary);
+$accent: var(--mat-sys-secondary);
+$error: var(--mat-sys-error);
+$warning: #ffae1f;
+$success: #13deb9;
+$info: #0dcaf0;
+
+@include mat.button-overrides((
+  filled-container-shape: 8px,
+  outlined-container-shape: 8px,
+  text-container-shape: 8px,
+  filled-horizontal-padding: 16px,
+  outlined-horizontal-padding: 16px,
+  text-horizontal-padding: 12px,
+));
+
+@include mat.icon-button-overrides((icon-color: $text-color));
+
+/* 按钮颜色定义 */
+.mat-mdc-button-base:not(:disabled) {
+  &.mat-primary {
+    color: $primary;
+  }
+  &.mat-accent {
+    color: $accent;
+  }
+  &.mat-success {
+    color: $success;
+  }
+  &.mat-warn {
+    color: $warning;
+  }
+  &.mat-error {
+    color: $error;
+  }
+}
+
+/* 填充按钮样式 */
+.mat-mdc-raised-button:not(:disabled) {
+  &.mat-primary {
+    color: white;
+    background-color: $primary;
+  }
+  &.mat-accent {
+    color: white;
+    background-color: $accent;
+  }
+  &.mat-success {
+    color: white;
+    background-color: $success;
+  }
+  &.mat-warn {
+    color: white;
+    background-color: $warning;
+  }
+  &.mat-error {
+    color: white;
+    background-color: $error;
+  }
+}

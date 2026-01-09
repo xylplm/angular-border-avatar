@@ -1,0 +1,33 @@
+{
+  "home": {
+    "title": "Angular Border Avatar"
+  },
+  "preset": {
+    "preset1": "Preset 1",
+    "preset2": "Preset 2"
+  },
+  "common": {
+    "preview": "Preview",
+    "presets": "Presets",
+    "debug": "Customize",
+    "adjust": "Quick Adjust",
+    "show": "Show",
+    "hide": "Hide",
+    "avatarUrl": "Avatar URL",
+    "borderUrl": "Border GIF URL",
+    "size": "Size (px)",
+    "avatarScale": "Avatar Scale",
+    "topOffset": "Top Offset",
+    "leftOffset": "Left Offset",
+    "rotate": "Rotate",
+    "borderRadius": "Border Radius",
+    "jsonConfig": "JSON Config",
+    "import": "Import",
+    "update": "Update",
+    "copy": "Copy",
+    "download": "Download",
+    "usage": "Usage",
+    "usageDesc": "Adjust parameters in real-time. Upload local files or paste URLs. Copy the final configuration and use it in your project.",
+    "github": "GitHub"
+  }
+}

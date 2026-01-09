@@ -1,0 +1,33 @@
+{
+  "home": {
+    "title": "Angular 边框头像"
+  },
+  "preset": {
+    "preset1": "预设 1",
+    "preset2": "预设 2"
+  },
+  "common": {
+    "preview": "预览",
+    "presets": "预设配置",
+    "debug": "自定义",
+    "adjust": "快速调整",
+    "show": "显示",
+    "hide": "隐藏",
+    "avatarUrl": "头像地址",
+    "borderUrl": "边框 GIF 地址",
+    "size": "尺寸 (px)",
+    "avatarScale": "头像缩放比例",
+    "topOffset": "垂直偏移",
+    "leftOffset": "水平偏移",
+    "rotate": "旋转角度",
+    "borderRadius": "边框圆角",
+    "jsonConfig": "JSON 配置",
+    "import": "导入",
+    "update": "更新",
+    "copy": "复制",
+    "download": "下载",
+    "usage": "使用说明",
+    "usageDesc": "实时调整参数。上传本地文件或粘贴 URL 地址。复制最终配置在您的项目中使用。",
+    "github": "GitHub"
+  }
+}

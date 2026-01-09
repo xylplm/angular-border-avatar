@@ -1,0 +1,359 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+/* 屏幕阅读器专用 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ========== 主容器 ========== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--mat-sys-surface);
+}
+
+/* ========== 顶部导航 ========== */
+.header {
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  padding: 1rem;
+  box-shadow: 0 2px 12px rgba(0, 102, 217, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .logo-img {
+      height: 40px;
+      width: auto;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--mat-sys-on-primary);
+    }
+  }
+
+  .nav-actions {
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+/* ========== 主内容 ========== */
+.main-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+section {
+  margin-bottom: 2rem;
+}
+
+/* ========== 快速参数调整 ========== */
+.quick-params {
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+  }
+}
+
+.params-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.9rem;
+  }
+}
+
+/* ========== Slider 样式 ========== */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .slider {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--mat-sys-surface-dim);
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--mat-sys-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.15);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    &::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--mat-sys-primary);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.15);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+
+  .value-display {
+    min-width: 50px;
+    text-align: right;
+    font-weight: 500;
+    color: var(--mat-sys-primary);
+  }
+}
+
+/* ========== 预览 ========== */
+.preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, var(--mat-sys-surface-container-lowest) 0%, var(--mat-sys-surface-container-low) 100%);
+  border-radius: 12px;
+  min-height: 340px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ========== 预设按钮 ========== */
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+/* ========== 调试区域 ========== */
+.debug-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.debug-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ========== JSON 编辑区 ========== */
+.json-section {
+  margin-top: 1.5rem;
+
+  h3 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .json-editor {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--mat-sys-outline);
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    resize: vertical;
+    margin-bottom: 1rem;
+    background: var(--mat-sys-surface-bright);
+    color: var(--mat-sys-on-surface);
+
+    &:focus {
+      outline: none;
+      border-color: var(--mat-sys-primary);
+      background: var(--mat-sys-surface);
+      box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+    }
+  }
+
+  .json-actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+
+    button {
+      flex: 1;
+      min-width: 100px;
+      gap: 0.5rem;
+    }
+  }
+}
+
+/* ========== 响应式布局 ========== */
+.preview-debug-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+
+  .preview-part {
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      color: var(--mat-sys-on-surface);
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .preview-debug-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    .header-content {
+      gap: 1rem;
+    }
+
+    .logo-section {
+      gap: 0.5rem;
+
+      h1 {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .presets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .json-actions {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+/* ========== Material Design 增强 ========== */
+mat-card {
+  box-shadow: var(--mat-sys-shadow-1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  background: var(--mat-sys-surface-container-low);
+
+  &:hover {
+    box-shadow: var(--mat-sys-shadow-3);
+  }
+
+  mat-card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  mat-card-content {
+    padding: 1.5rem;
+    
+    &:last-child {
+      padding-bottom: 1.5rem;
+    }
+  }
+
+  mat-card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+    margin: 0;
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+
+/* ========== Material Icons ========== */
+mat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== 底部 ========== */
+.footer {
+  background: var(--mat-sys-surface-container);
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: auto;
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    p {
+      margin: 0;
+    }
+  }
+}
