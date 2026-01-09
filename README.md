@@ -1,8 +1,10 @@
 # Angular Border Avatar
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/xylplm/angular-border-avatar/main/src/assets/logo.png" alt="Angular Border Avatar" width="200">
+  <img src="https://raw.githubusercontent.com/xylplm/angular-border-avatar/master/src/assets/logo.png" alt="Angular Border Avatar" width="200">
 </div>
+
+**[🎨 Live Demo](https://xylplm.github.io/angular-border-avatar/)**
 
 A lightweight Angular component for creating beautiful animated avatar borders with GIF support.
 
@@ -10,6 +12,7 @@ A lightweight Angular component for creating beautiful animated avatar borders w
 [![license](https://img.shields.io/npm/l/@luoxiao123/angular-border-avatar.svg?style=flat-square)]()
 [![downloads](https://img.shields.io/npm/dm/@luoxiao123/angular-border-avatar?style=flat-square)]()
 [![GitHub stars](https://img.shields.io/github/stars/xylplm/angular-border-avatar.svg?style=flat-square)](https://github.com/xylplm/angular-border-avatar)
+[![demo](https://img.shields.io/badge/demo-online-brightgreen?style=flat-square)](https://xylplm.github.io/angular-border-avatar/)
 
 English | [中文](README.zh.md)
 

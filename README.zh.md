@@ -1,8 +1,10 @@
 # Angular 边框头像
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/xylplm/angular-border-avatar/main/src/assets/logo.png" alt="Angular Border Avatar" width="200">
+  <img src="https://raw.githubusercontent.com/xylplm/angular-border-avatar/master/src/assets/logo.png" alt="Angular Border Avatar" width="200">
 </div>
+
+**[🎨 在线演示](https://xylplm.github.io/angular-border-avatar/)**
 
 一个轻量级的 Angular 组件，用于创建带有动画 GIF 边框的头像。
 
@@ -10,6 +12,7 @@
 [![license](https://img.shields.io/npm/l/@luoxiao123/angular-border-avatar.svg?style=flat-square)]()
 [![downloads](https://img.shields.io/npm/dm/@luoxiao123/angular-border-avatar?style=flat-square)]()
 [![GitHub stars](https://img.shields.io/github/stars/xylplm/angular-border-avatar.svg?style=flat-square)](https://github.com/xylplm/angular-border-avatar)
+[![demo](https://img.shields.io/badge/demo-online-brightgreen?style=flat-square)](https://xylplm.github.io/angular-border-avatar/)
 
 [English](README.md) | 中文
 
