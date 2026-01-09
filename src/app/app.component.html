@@ -7,8 +7,8 @@
         <h1>{{ 'home.title' | translate }}</h1>
       </div>
       <div class="nav-actions">
-        <button mat-raised-button color="accent" (click)="toggleLanguage()" matTooltip="Toggle language">
-          {{ currentLanguage() === 'en' ? '中文' : 'EN' }}
+        <button mat-raised-button color="accent" (click)="toggleLanguage()" [matTooltip]="currentLanguage() === 'en' ? ('common.switchToChinese' | translate) : ('common.switchToEnglish' | translate)">
+          {{ currentLanguage() === 'en' ? 'EN' : '中文' }}
         </button>
         <a mat-raised-button color="primary" href="https://github.com/xylplm/angular-border-avatar" target="_blank" matTooltip="View on GitHub">
           <mat-icon>open_in_new</mat-icon>
