@@ -29,7 +29,9 @@
   ></div>
 
   <!-- 加载动画 -->
-  <div class="loading-spinner" *ngIf="isLoading()">
-    <div class="spinner"></div>
-  </div>
+  @if (isLoading()) {
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+  }
 </div>
