@@ -1,21 +1,16 @@
-export default [
-  {
-    files: ['eslint.config.js'],
-    languageOptions: {
-      sourceType: 'commonjs',
-    },
-  },
+import { defineConfig } from "eslint/config";
+import rootConfig from "../../eslint.config.js";
+
+export default defineConfig([
+  ...rootConfig,
   {
     files: ['**/*.ts'],
-    extends: [
-      // eslint configuration from angular eslint
-    ],
     rules: {
       '@angular-eslint/directive-selector': [
         'error',
         {
           type: 'attribute',
-          prefix: 'lib',
+          prefix: 'tabler-icons',
           style: 'camelCase',
         },
       ],
@@ -23,10 +18,14 @@ export default [
         'error',
         {
           type: 'element',
-          prefix: 'lib',
+          prefix: 'tabler-icons',
           style: 'kebab-case',
         },
       ],
     },
   },
-];
+  {
+    files: ['**/*.html'],
+    rules: {},
+  },
+]);

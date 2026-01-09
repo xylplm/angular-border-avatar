@@ -1,3 +1,4 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
@@ -5,9 +6,15 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": [],
-    "lib": ["dom", "es2020"]
+    "types": []
   },
-  "exclude": ["src/test.ts", "**/*.spec.ts", "**/*.test.ts"],
-  "include": ["src/**/*.ts"]
+  "angularCompilerOptions": {
+    "skipTemplateCodegen": true,
+    "strictMetadataEmit": true,
+    "enableResourceInlining": true
+  },
+  "exclude": [
+    "src/test.ts",
+    "**/*.spec.ts"
+  ]
 }
