@@ -227,7 +227,7 @@ export class AppComponent implements OnInit, OnDestroy {
           leftOffsetRatio: preset.borderConfig.leftOffsetRatio,
           rotate: preset.borderConfig.rotate || 0,
           borderRadius: preset.borderConfig.borderRadius || '50%'
-        });
+        }, { emitEvent: false });
       } else {
         // 当 borderConfig 为 null 时，重置表单
         this.quickParamsForm.reset({

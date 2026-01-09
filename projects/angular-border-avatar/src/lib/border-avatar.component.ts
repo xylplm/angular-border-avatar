@@ -68,6 +68,14 @@ export class BorderAvatarComponent implements AfterViewInit, OnDestroy {
       this.borderConfig();
       this.calculateDimensions();
     });
+
+    // 监听 avatarUrl 变化，重置加载状态
+    effect(() => {
+      this.avatarUrl();
+      // 当 avatarUrl 改变时，重置 hasError 和 isLoading，以便重新加载新的图片
+      this.hasError.set(false);
+      this.isLoading.set(true);
+    });
   }
 
   ngAfterViewInit() {
