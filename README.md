@@ -69,8 +69,8 @@ export class AppComponent {
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `avatarUrl` | `string` | `''` | **Required** - Avatar image URL |
-| `borderConfig` | `BorderAvatarConfig` | - | **Required** - Border configuration |
+| `avatarUrl` | `string \| null \| undefined` | `null` | Avatar image URL. When null/undefined, uses default image |
+| `borderConfig` | `BorderAvatarConfig \| null \| undefined` | `null` | Border configuration. When null/undefined, border is hidden |
 | `size` | `string` | `'120px'` | Container size (px, rem, %, vw, etc.) |
 | `altText` | `string` | `'Avatar'` | Image alt text |
 | `clickable` | `boolean` | `false` | Whether avatar is clickable |

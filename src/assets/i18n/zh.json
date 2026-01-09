@@ -4,7 +4,8 @@
   },
   "preset": {
     "preset1": "预设 1",
-    "preset2": "预设 2"
+    "preset2": "预设 2",
+    "preset3": "预设 3"
   },
   "common": {
     "preview": "预览",

@@ -1,21 +1,6 @@
-import {
-  Component,
-  inject,
-  ViewChild,
-  ElementRef,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-  OnInit,
-  OnDestroy,
-  signal,
-} from '@angular/core';
+import { Component, inject, ViewChild, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -27,17 +12,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
-import {
-  BorderAvatarComponent,
-  BorderAvatarConfig,
-} from 'angular-border-avatar';
+import { BorderAvatarComponent, BorderAvatarConfig } from 'angular-border-avatar';
 
 // 预设配置常量类型
 interface PresetConfig {
   key: string;
   name: string;
-  avatarUrl: string;
-  borderConfig: BorderAvatarConfig;
+  avatarUrl: string | null | undefined;
+  borderConfig: BorderAvatarConfig | null | undefined;
   size: string;
 }
 
@@ -53,9 +35,9 @@ const PRESET_CONFIGS: PresetConfig[] = [
       topOffsetRatio: 0.37,
       leftOffsetRatio: 0.21,
       rotate: 0,
-      borderRadius: '50%',
+      borderRadius: '50%'
     },
-    size: '150px',
+    size: '150px'
   },
   {
     key: 'preset2',
@@ -67,10 +49,17 @@ const PRESET_CONFIGS: PresetConfig[] = [
       topOffsetRatio: 0.2,
       leftOffsetRatio: 0.2,
       rotate: 0,
-      borderRadius: '50%',
+      borderRadius: '50%'
     },
-    size: '250px',
+    size: '250px'
   },
+  {
+    key: 'preset3',
+    name: 'preset.preset3',
+    avatarUrl: null,
+    borderConfig: null,
+    size: '200px'
+  }
 ];
 
 @Component({
@@ -92,17 +81,15 @@ const PRESET_CONFIGS: PresetConfig[] = [
     MatCardModule,
     MatIconModule,
     MatTooltipModule,
-    MatDividerModule,
-  ],
+    MatDividerModule
+  ]
 })
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('borderFileInput') borderFileInput!: ElementRef;
   @ViewChild('avatarFileInput') avatarFileInput!: ElementRef;
 
   // 使用 Signal 管理状态
-  currentLanguage = signal<'en' | 'zh'>(
-    (localStorage.getItem('lang') as 'en' | 'zh') || 'en'
-  );
+  currentLanguage = signal<'en' | 'zh'>((localStorage.getItem('lang') as 'en' | 'zh') || 'en');
   selectedPreset = signal<string>('preset1');
   debugMode = signal<boolean>(false);
 
@@ -112,27 +99,25 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // 预设示例 - 从常量直接构建
   presetConfigs = Object.fromEntries(
-    PRESET_CONFIGS.map((preset) => [
+    PRESET_CONFIGS.map(preset => [
       preset.key,
       {
         name: preset.name,
         avatarUrl: preset.avatarUrl,
         borderConfig: preset.borderConfig,
-        size: preset.size,
-      },
+        size: preset.size
+      }
     ])
   );
 
   // 调试参数
-  avatarUrl = signal<string>(PRESET_CONFIGS[0].avatarUrl);
-  borderGifUrl = signal<string>(PRESET_CONFIGS[0].borderConfig.gifUrl);
+  avatarUrl = signal<string | null | undefined>(PRESET_CONFIGS[0].avatarUrl);
+  borderGifUrl = signal<string>(PRESET_CONFIGS[0].borderConfig?.gifUrl || '');
   avatarSize = signal<string>(PRESET_CONFIGS[0].size);
 
-  borderConfig = signal<BorderAvatarConfig>(PRESET_CONFIGS[0].borderConfig);
+  borderConfig = signal<BorderAvatarConfig | null | undefined>(PRESET_CONFIGS[0].borderConfig);
 
-  configJson = signal<string>(
-    JSON.stringify(PRESET_CONFIGS[0].borderConfig, null, 2)
-  );
+  configJson = signal<string>(PRESET_CONFIGS[0].borderConfig ? JSON.stringify(PRESET_CONFIGS[0].borderConfig, null, 2) : '');
 
   // 响应式表单
   quickParamsForm!: FormGroup;
@@ -155,11 +140,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // 初始化快速参数表单
     this.quickParamsForm = this.formBuilder.group({
-      avatarScale: [config.avatarScale],
-      topOffsetRatio: [config.topOffsetRatio],
-      leftOffsetRatio: [config.leftOffsetRatio],
-      rotate: [config.rotate || 0],
-      borderRadius: [config.borderRadius || '50%'],
+      avatarScale: [config?.avatarScale || 0.7],
+      topOffsetRatio: [config?.topOffsetRatio || 0.15],
+      leftOffsetRatio: [config?.leftOffsetRatio || 0.15],
+      rotate: [config?.rotate || 0],
+      borderRadius: [config?.borderRadius || '50%']
     });
 
     // 初始化调试表单
@@ -167,51 +152,51 @@ export class AppComponent implements OnInit, OnDestroy {
       avatarUrl: [this.avatarUrl()],
       borderGifUrl: [this.borderGifUrl()],
       avatarSize: [this.avatarSize()],
-      configJson: [this.configJson()],
+      configJson: [this.configJson()]
     });
 
     // 订阅快速参数表单的值变化（添加防抖）
-    this.quickParamsForm.valueChanges
-      .pipe(debounceTime(100), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        const newConfig: BorderAvatarConfig = {
-          ...this.borderConfig(),
-          avatarScale: parseFloat(value.avatarScale),
-          topOffsetRatio: parseFloat(value.topOffsetRatio),
-          leftOffsetRatio: parseFloat(value.leftOffsetRatio),
-          rotate: parseFloat(value.rotate) || 0,
-          borderRadius: value.borderRadius,
-        };
-        this.borderConfig.set(newConfig);
-        this.syncConfigJsonToForm();
-      });
+    this.quickParamsForm.valueChanges.pipe(debounceTime(100), takeUntil(this.destroy$)).subscribe(value => {
+      const currentConfig = this.borderConfig();
+      const newConfig: BorderAvatarConfig = {
+        gifUrl: currentConfig?.gifUrl || '',
+        avatarScale: parseFloat(value.avatarScale),
+        topOffsetRatio: parseFloat(value.topOffsetRatio),
+        leftOffsetRatio: parseFloat(value.leftOffsetRatio),
+        rotate: parseFloat(value.rotate) || 0,
+        borderRadius: value.borderRadius
+      };
+      this.borderConfig.set(newConfig);
+      this.syncConfigJsonToForm();
+    });
 
     // 订阅调试表单的值变化（添加防抖）
-    this.debugForm.valueChanges
-      .pipe(debounceTime(100), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        // 忽略 configJson 的变化，防止循环更新
-        if (value.configJson === this.configJson()) {
-          return;
-        }
+    this.debugForm.valueChanges.pipe(debounceTime(100), takeUntil(this.destroy$)).subscribe(value => {
+      // 忽略 configJson 的变化，防止循环更新
+      if (value.configJson === this.configJson()) {
+        return;
+      }
 
-        // 只更新实际改变的字段
-        if (value.avatarUrl !== this.avatarUrl()) {
-          this.avatarUrl.set(value.avatarUrl);
-        }
-        if (value.borderGifUrl !== this.borderGifUrl()) {
-          this.borderGifUrl.set(value.borderGifUrl);
-          // 同步 borderConfig 中的 gifUrl
-          const newConfig = {
-            ...this.borderConfig(),
-            gifUrl: value.borderGifUrl,
+      // 只更新实际改变的字段
+      if (value.avatarUrl !== this.avatarUrl()) {
+        this.avatarUrl.set(value.avatarUrl);
+      }
+      if (value.borderGifUrl !== this.borderGifUrl()) {
+        this.borderGifUrl.set(value.borderGifUrl);
+        // 同步 borderConfig 中的 gifUrl
+        const currentConfig = this.borderConfig();
+        if (currentConfig) {
+          const newConfig: BorderAvatarConfig = {
+            ...currentConfig,
+            gifUrl: value.borderGifUrl
           };
           this.borderConfig.set(newConfig);
         }
-        if (value.avatarSize !== this.avatarSize()) {
-          this.avatarSize.set(value.avatarSize);
-        }
-      });
+      }
+      if (value.avatarSize !== this.avatarSize()) {
+        this.avatarSize.set(value.avatarSize);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -232,38 +217,49 @@ export class AppComponent implements OnInit, OnDestroy {
     const preset = this.presetConfigs[key];
     if (preset) {
       // 更新 borderConfig
-      this.borderConfig.set({ ...preset.borderConfig });
+      this.borderConfig.set(preset.borderConfig || null);
 
       // 更新快速参数表单的值
-      this.quickParamsForm.patchValue({
-        avatarScale: preset.borderConfig.avatarScale,
-        topOffsetRatio: preset.borderConfig.topOffsetRatio,
-        leftOffsetRatio: preset.borderConfig.leftOffsetRatio,
-        rotate: preset.borderConfig.rotate || 0,
-        borderRadius: preset.borderConfig.borderRadius || '50%',
-      });
+      if (preset.borderConfig) {
+        this.quickParamsForm.patchValue({
+          avatarScale: preset.borderConfig.avatarScale,
+          topOffsetRatio: preset.borderConfig.topOffsetRatio,
+          leftOffsetRatio: preset.borderConfig.leftOffsetRatio,
+          rotate: preset.borderConfig.rotate || 0,
+          borderRadius: preset.borderConfig.borderRadius || '50%'
+        });
+      } else {
+        // 当 borderConfig 为 null 时，重置表单
+        this.quickParamsForm.reset({
+          avatarScale: 0,
+          topOffsetRatio: 0,
+          leftOffsetRatio: 0,
+          rotate: 0,
+          borderRadius: '50%'
+        }, { emitEvent: false });
+      }
 
       // 更新调试表单的值
       this.debugForm.patchValue(
         {
-          avatarUrl: preset.avatarUrl,
-          borderGifUrl: preset.borderConfig.gifUrl,
-          avatarSize: preset.size,
+          avatarUrl: preset.avatarUrl || '',
+          borderGifUrl: preset.borderConfig?.gifUrl || '',
+          avatarSize: preset.size
         },
         { emitEvent: false }
       );
 
       // 更新信号值
       this.avatarUrl.set(preset.avatarUrl);
-      this.borderGifUrl.set(preset.borderConfig.gifUrl);
+      this.borderGifUrl.set(preset.borderConfig?.gifUrl || '');
       this.avatarSize.set(preset.size);
 
       // 同步 JSON 文本框
-      const jsonStr = JSON.stringify(preset.borderConfig, null, 2);
+      const jsonStr = preset.borderConfig ? JSON.stringify(preset.borderConfig, null, 2) : '';
       this.configJson.set(jsonStr);
       this.debugForm.patchValue(
         {
-          configJson: jsonStr,
+          configJson: jsonStr
         },
         { emitEvent: false }
       );
@@ -287,10 +283,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // 验证文件类型
     if (!file.type.startsWith('image/')) {
-      const msg =
-        this.currentLanguage() === 'en'
-          ? 'Please select a valid image file'
-          : '请选择有效的图片文件';
+      const msg = this.currentLanguage() === 'en' ? 'Please select a valid image file' : '请选择有效的图片文件';
       console.error(msg);
       return;
     }
@@ -298,10 +291,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // 验证文件大小（限制为 5MB）
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      const msg =
-        this.currentLanguage() === 'en'
-          ? 'File size must be less than 5MB'
-          : '文件大小必须小于 5MB';
+      const msg = this.currentLanguage() === 'en' ? 'File size must be less than 5MB' : '文件大小必须小于 5MB';
       console.error(msg);
       return;
     }
@@ -313,10 +303,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     };
     reader.onerror = () => {
-      const msg =
-        this.currentLanguage() === 'en'
-          ? 'Failed to read file'
-          : '读取文件失败';
+      const msg = this.currentLanguage() === 'en' ? 'Failed to read file' : '读取文件失败';
       console.error(msg);
     };
     reader.readAsDataURL(file);
@@ -362,12 +349,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
 
       // 验证必需字段
-      if (
-        !config.gifUrl ||
-        typeof config.avatarScale !== 'number' ||
-        typeof config.topOffsetRatio !== 'number' ||
-        typeof config.leftOffsetRatio !== 'number'
-      ) {
+      if (!config.gifUrl || typeof config.avatarScale !== 'number' || typeof config.topOffsetRatio !== 'number' || typeof config.leftOffsetRatio !== 'number') {
         throw new Error('配置缺少必需字段');
       }
 
@@ -380,7 +362,7 @@ export class AppComponent implements OnInit, OnDestroy {
           topOffsetRatio: config.topOffsetRatio,
           leftOffsetRatio: config.leftOffsetRatio,
           rotate: config.rotate || 0,
-          borderRadius: config.borderRadius || '50%',
+          borderRadius: config.borderRadius || '50%'
         },
         { emitEvent: false }
       );
@@ -402,19 +384,14 @@ export class AppComponent implements OnInit, OnDestroy {
       // 同步 JSON 文本框以显示最新的配置
       this.syncConfigJsonToForm();
 
-      const message =
-        this.currentLanguage() === 'en'
-          ? 'Config updated successfully!'
-          : '配置更新成功！';
+      const message = this.currentLanguage() === 'en' ? 'Config updated successfully!' : '配置更新成功！';
       this.snackBar.open(message, 'OK', { duration: 3000 });
     } catch (e) {
       const message =
-        this.currentLanguage() === 'en'
-          ? `Update failed: ${e instanceof Error ? e.message : 'Unknown error'}`
-          : `更新失败: ${e instanceof Error ? e.message : '未知错误'}`;
+        this.currentLanguage() === 'en' ? `Update failed: ${e instanceof Error ? e.message : 'Unknown error'}` : `更新失败: ${e instanceof Error ? e.message : '未知错误'}`;
       this.snackBar.open(message, '关闭', {
         duration: 5000,
-        panelClass: ['error-snackbar'],
+        panelClass: ['error-snackbar']
       });
     }
   }
@@ -423,38 +400,24 @@ export class AppComponent implements OnInit, OnDestroy {
   copyConfig() {
     const configValue = this.debugForm.get('configJson')?.value;
     if (!configValue) {
-      this.snackBar.open(
-        this.currentLanguage() === 'en'
-          ? 'No config to copy'
-          : '没有配置要复制',
-        '关闭',
-        { duration: 3000, panelClass: ['warn-snackbar'] }
-      );
+      this.snackBar.open(this.currentLanguage() === 'en' ? 'No config to copy' : '没有配置要复制', '关闭', { duration: 3000, panelClass: ['warn-snackbar'] });
       return;
     }
     navigator.clipboard
       .writeText(configValue)
       .then(() => {
-        const message =
-          this.currentLanguage() === 'en'
-            ? 'Config copied to clipboard!'
-            : '已复制到剪贴板！';
+        const message = this.currentLanguage() === 'en' ? 'Config copied to clipboard!' : '已复制到剪贴板！';
         this.snackBar.open(message, 'OK', {
           duration: 3000,
-          panelClass: ['success-snackbar'],
+          panelClass: ['success-snackbar']
         });
       })
       .catch(() => {
-        const message =
-          this.currentLanguage() === 'en'
-            ? 'Failed to copy config'
-            : '复制失败';
+        const message = this.currentLanguage() === 'en' ? 'Failed to copy config' : '复制失败';
         this.snackBar.open(message, '关闭', {
           duration: 3000,
-          panelClass: ['error-snackbar'],
+          panelClass: ['error-snackbar']
         });
       });
   }
-
-
 }

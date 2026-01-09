@@ -4,7 +4,8 @@
   },
   "preset": {
     "preset1": "Preset 1",
-    "preset2": "Preset 2"
+    "preset2": "Preset 2",
+    "preset3": "Preset 3"
   },
   "common": {
     "preview": "Preview",

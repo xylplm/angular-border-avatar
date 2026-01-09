@@ -69,8 +69,8 @@ export class AppComponent {
 
 | 属性 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `avatarUrl` | `string` | `''` | **必需** - 头像图片 URL |
-| `borderConfig` | `BorderAvatarConfig` | - | **必需** - 边框配置 |
+| `avatarUrl` | `string \| null \| undefined` | `null` | 头像图片 URL。为 null/undefined 时使用默认图片 |
+| `borderConfig` | `BorderAvatarConfig \| null \| undefined` | `null` | 边框配置。为 null/undefined 时隐藏边框 |
 | `size` | `string` | `'120px'` | 容器大小（支持 px, rem, %, vw 等） |
 | `altText` | `string` | `'Avatar'` | 图片 alt 文本 |
 | `clickable` | `boolean` | `false` | 是否可点击 |
