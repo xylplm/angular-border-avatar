@@ -54,10 +54,11 @@ export class AppComponent {
   
   borderConfig: BorderAvatarConfig = {
     gifUrl: 'https://example.com/border.gif',
-    avatarScale: 0.7,
-    topOffsetRatio: 0.15,
-    leftOffsetRatio: 0.15,
-    borderRadius: '50%',
+    avatarScale: 0.7,              // Avatar occupies 70% of container
+    topOffsetRatio: 0.15,          // 15% of container height from top
+    leftOffsetRatio: 0.15,         // 15% of container width from left
+    borderRadius: '50%',            // Circle shape
+    rotate: 0,                      // Rotation angle in degrees
   };
 }
 ```
@@ -68,13 +69,13 @@ export class AppComponent {
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `avatarUrl` | `string` | - | **Required** - Avatar image URL |
+| `avatarUrl` | `string` | `''` | **Required** - Avatar image URL |
 | `borderConfig` | `BorderAvatarConfig` | - | **Required** - Border configuration |
 | `size` | `string` | `'120px'` | Container size (px, rem, %, vw, etc.) |
 | `altText` | `string` | `'Avatar'` | Image alt text |
 | `clickable` | `boolean` | `false` | Whether avatar is clickable |
-| `showDebug` | `boolean` | `false` | Show debug information |
 | `lazyLoad` | `boolean` | `true` | Enable lazy loading |
+| `defaultImageUrl` | `string` | SVG placeholder | Default image when loading fails |
 
 ### BorderAvatarConfig
 
@@ -132,8 +133,8 @@ onAvatarClick(event: MouseEvent) {
   console.log('Avatar clicked!', event);
 }
 
-onImageError(url: string) {
-  console.error('Failed to load image:', url);
+onImageError(error: string) {
+  console.error('Failed to load image:', error);
 }
 ```
 
@@ -157,7 +158,8 @@ import { BorderAvatarComponent } from '@luoxiao123/angular-border-avatar';
 export class MyComponent {
   @ViewChild(BorderAvatarComponent) avatar!: BorderAvatarComponent;
 
-  onWindowResize() {
+  changeDimensions() {
+    // When container size changes, call recalculate method
     this.avatar.recalculate();
   }
 }
@@ -219,5 +221,27 @@ Left Offset = Container Width × leftOffsetRatio
 3. **borderRadius**: Match the avatar shape (50% for circle, other values for rectangle)
 4. **GIF Size**: Keep GIF file size under 1MB for better performance
 
-## 💡 Advanced Tips
+## 🌐 Browser Support
 
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## 📄 License
+
+MIT
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit issues and pull requests.
+
+## 📞 Support
+
+If you have any questions, please open an issue on [GitHub Issues](https://github.com/xylplm/angular-border-avatar/issues).
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+[English](README.md) | [中文](README.zh.md)

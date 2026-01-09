@@ -58,6 +58,7 @@ export class AppComponent {
     topOffsetRatio: 0.15,       // 距顶部 15% 的容器高度
     leftOffsetRatio: 0.15,      // 距左边 15% 的容器宽度
     borderRadius: '50%',         // 圆形
+    rotate: 0,                   // 旋转角度
   };
 }
 ```
@@ -68,13 +69,13 @@ export class AppComponent {
 
 | 属性 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `avatarUrl` | `string` | - | **必需** - 头像图片 URL |
+| `avatarUrl` | `string` | `''` | **必需** - 头像图片 URL |
 | `borderConfig` | `BorderAvatarConfig` | - | **必需** - 边框配置 |
 | `size` | `string` | `'120px'` | 容器大小（支持 px, rem, %, vw 等） |
 | `altText` | `string` | `'Avatar'` | 图片 alt 文本 |
 | `clickable` | `boolean` | `false` | 是否可点击 |
-| `showDebug` | `boolean` | `false` | 是否显示调试信息 |
 | `lazyLoad` | `boolean` | `true` | 是否启用懒加载 |
+| `defaultImageUrl` | `string` | SVG占位图 | 图片加载失败时的默认图片 |
 
 ### 边框配置 (BorderAvatarConfig)
 
@@ -237,8 +238,3 @@ MIT
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [English](https://github.com/xylplm/angular-tabler-icons) | [中文](https://github.com/xylplm/angular-tabler-icons/blob/master/README.zh.md)
-
-## 📚 目录
-
-- [简介](#简介)
-- [安装](#安装)
