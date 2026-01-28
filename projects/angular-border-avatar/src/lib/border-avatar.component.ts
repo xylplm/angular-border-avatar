@@ -139,7 +139,7 @@ export class BorderAvatarComponent implements AfterViewInit, OnDestroy {
       top: `${this.topOffset()}px`,
       left: `${this.leftOffset()}px`,
       transform: transform,
-      borderRadius: config?.borderRadius || '50%',
+      borderRadius: config?.borderRadius || '',
       display: 'block',
     };
     return style;

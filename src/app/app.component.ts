@@ -144,7 +144,7 @@ export class AppComponent implements OnInit, OnDestroy {
       topOffsetRatio: [config?.topOffsetRatio || 0.15],
       leftOffsetRatio: [config?.leftOffsetRatio || 0.15],
       rotate: [config?.rotate || 0],
-      borderRadius: [config?.borderRadius || '50%']
+      borderRadius: [config?.borderRadius || '']
     });
 
     // 初始化调试表单
@@ -226,7 +226,7 @@ export class AppComponent implements OnInit, OnDestroy {
           topOffsetRatio: preset.borderConfig.topOffsetRatio,
           leftOffsetRatio: preset.borderConfig.leftOffsetRatio,
           rotate: preset.borderConfig.rotate || 0,
-          borderRadius: preset.borderConfig.borderRadius || '50%'
+          borderRadius: preset.borderConfig.borderRadius || ''
         }, { emitEvent: false });
       } else {
         // 当 borderConfig 为 null 时，重置表单
@@ -235,7 +235,7 @@ export class AppComponent implements OnInit, OnDestroy {
           topOffsetRatio: 0,
           leftOffsetRatio: 0,
           rotate: 0,
-          borderRadius: '50%'
+          borderRadius: ''
         }, { emitEvent: false });
       }
 
@@ -362,7 +362,7 @@ export class AppComponent implements OnInit, OnDestroy {
           topOffsetRatio: config.topOffsetRatio,
           leftOffsetRatio: config.leftOffsetRatio,
           rotate: config.rotate || 0,
-          borderRadius: config.borderRadius || '50%'
+          borderRadius: config.borderRadius || ''
         },
         { emitEvent: false }
       );
